@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <link rel="stylesheet" href="style.css">
+    <style ></style>
+  </head>
+  <body style="background-color: black; color: white">
+    <h1>Notification</h1>
+
+    <label for="user-id">User ID</label>
+    <input id="user-id" name="userId" type="text" required />
+    <button id="subscribe-btn" type="button">Subscribe</button>
+    <p id="subscribe-status"></p>
+
+    <h2>Send Notification</h2>
+
+    <img
+      src="https://aidebate-pub.s3.ap-south-1.amazonaws.com/Screenshot+2026-08-29+001355.png"
+      alt="s3 img"
+      style="width: 300px; height: 300px"
+    />
+
+    <form id="send-form">
+      <label for="userid">user id</label>
+      <input id="userid" name="userid" type="text" required />
+
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" required />
+
+      <label for="body">Body</label>
+      <textarea id="body" name="body" required></textarea>
+
+      <button id="send-btn" type="submit">Send Notification</button>
+    </form>
+    <p id="send-status"></p>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>
