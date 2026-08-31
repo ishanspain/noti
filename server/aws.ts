@@ -6,8 +6,9 @@ const accessKey = process.env.AWS_KEY;
 const secretKey = process.env.AWS_SECRET;
 
 const region = "ap-south-1";
-const bucket = "aidebate-cli";
+// const bucket = "aidebate";
 // const key = "chatFiles/_home_karan_Downloads_number-system.svg.png";
+const bucket = "aidebate-cli";
 const key = "videos/Thesis_animation_five_steps_202607260829.mp4";
 
 const host = `${bucket}.s3.${region}.amazonaws.com`;
