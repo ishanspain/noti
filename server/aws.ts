@@ -5,9 +5,10 @@ import {
   ListObjectsV2Command,
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { awsClient } from "./clients/awsClient";
-import { readFileSync } from "node:fs";
+import { createReadStream, readFileSync } from "node:fs";
 import path from "node:path";
 
 class Aws {
@@ -85,7 +86,8 @@ class Aws {
     let filename = objectKey;
 
     if (filePath) {
-      body = readFileSync(filePath);
+      //   body = readFileSync(filePath);
+      body = createReadStream(filePath);
       filename = path.basename(filePath);
     }
 
@@ -108,10 +110,23 @@ class Aws {
       console.log("Error", err);
     }
   };
+
+  public static readonly deleteObject = async (objectKey: string) => {
+    try {
+      const data = await awsClient.send(
+        new DeleteObjectCommand({ Bucket: "aidebate-cli", Key: objectKey }),
+      );
+      console.log("Success", data);
+      return data;
+    } catch (err) {
+      console.log("Error", err);
+    }
+  };
 }
 
 // await Aws.getPublicAccessBlock();
 // await Aws.getBucketPolicy();
 // await Aws.listObjects();
 // await Aws.getObject("hello");
-await Aws.putObject("aws.ts", null, "/home/karan/Desktop/noti/server/aws.ts");
+await Aws.putObject("aws.ts", null, "/home/karan/Downloads/Thesis_production_process_animation_202607270658.mp4");
+// await Aws.deleteObject("Thesis_production_process_animation_202607270658.mp4");
