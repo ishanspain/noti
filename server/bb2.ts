@@ -8,10 +8,11 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 
-import { createReadStream, readFileSync } from "node:fs";
+import { createReadStream, createWriteStream, readFileSync } from "node:fs";
 import { b2Client } from "./clients/bbclient";
 import * as os from "os";
 import * as path from "path";
+import { pipeline } from "stream/promises";
 
 const bucketName = "printcampus";
 
@@ -72,9 +73,12 @@ class Bb {
         console.log("Body", body);
       }); */
 
-      data.Body?.on("data", (chunk) => {
+     /*  data.Body?.on("data", (chunk) => {
         console.log("Data", chunk);
-      });
+      }); */
+
+      pipeline(data.Body, createWriteStream("test.jpeg"));
+
       return data;
     } catch (err) {
       console.log("Error", err);
@@ -132,10 +136,10 @@ class Bb {
 // await Bb.getPublicAccessBlock();
 // await Bb.getBucketPolicy();
 // await Bb.listObjects();
-// await Bb.getObject("hello");
-await Bb.putObject(
+await Bb.getObject("WhatsApp Image 2026-08-25 at 14.53.49.jpeg");
+/* await Bb.putObject(
   "aws.ts",
   null,
   "WhatsApp Image 2026-08-25 at 14.53.49.jpeg",
-);
+); */
 // await Bb.deleteObject("Thesis_production_process_animation_202607270658.mp4");
