@@ -2,6 +2,7 @@
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -36,10 +37,23 @@ export async function createPutPresignedUrl(objectKey: string) {
   });
 }
 
+export async function createDeletePresignedUrl(objectKey: string) {
+  const command = new DeleteObjectCommand({
+    Bucket: bucketName,
+    Key: objectKey,
+  });
+
+  // console.log(command)
+  return getSignedUrl(awsClient, command, {
+    expiresIn: 15 * 60,
+  });
+}
+
 // Example
 /* const url = await createGetPresignedUrl(
   "uploads/1785992369681_spiral-binding.png",
 ); */
-const url = await createPutPresignedUrl("test.mp4");
+// const url = await createPutPresignedUrl("test.mp4");
+const url = await createDeletePresignedUrl("pro.png");
 
 console.log(url);

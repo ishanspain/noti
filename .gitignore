@@ -3,3 +3,6 @@ dist/
 
 .env
 t.txt
+private_key.pem
+private_key.pem.pub
+public_key.pem
