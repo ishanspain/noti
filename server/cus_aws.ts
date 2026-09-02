@@ -9,7 +9,9 @@ const region = "ap-south-1";
 // const bucket = "aidebate";
 // const key = "chatFiles/_home_karan_Downloads_number-system.svg.png";
 const bucket = "aidebate-cli";
-const key = "videos/Thesis_animation_five_steps_202607260829.mp4";
+const key = "agent_generate_image - Glossy 3D product render_ 16_9 horizontal format_ A premium.png";
+const method = "PUT";
+
 
 const host = `${bucket}.s3.${region}.amazonaws.com`;
 
@@ -54,8 +56,9 @@ const signedHeaders = "host";
 
 const payloadHash = "UNSIGNED-PAYLOAD";
 
+
 const canonicalRequest = [
-  "GET",
+  method,
   canonicalUri,
   canonicalQueryString,
   canonicalHeaders,
