@@ -1,132 +1,40 @@
+// import { PutObjectCommand } from "@aws-sdk/client-s3";
 import {
-  GetBucketPolicyCommand,
-  ListBucketsCommand,
-  GetPublicAccessBlockCommand,
-  ListObjectsV2Command,
   GetObjectCommand,
   PutObjectCommand,
-  DeleteObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
-import { createReadStream, readFileSync } from "node:fs";
-import path from "node:path";
 
-class Aws {
-  public static readonly listBuckets = async () => {
-    try {
-      const data = await awsClient.send(new ListBucketsCommand({}));
-      console.log("Success", data.Buckets);
-      return data.Buckets;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
+export async function createGetPresignedUrl(objectKey: string) {
+  const command = new GetObjectCommand({
+    Bucket: "printcampus",
+    Key: objectKey,
+  });
 
-  public static readonly getPublicAccessBlock = async () => {
-    try {
-      const data = await awsClient.send(
-        new GetPublicAccessBlockCommand({ Bucket: "aidebate-cli" }),
-      );
-      console.log("Success", data.PublicAccessBlockConfiguration);
-      return data.PublicAccessBlockConfiguration;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
-
-  public static readonly getBucketPolicy = async () => {
-    try {
-      const data = await awsClient.send(
-        new GetBucketPolicyCommand({ Bucket: "aidebate-cli" }),
-      );
-      console.log("Success", data.Policy);
-      return data.Policy;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
-
-  public static readonly listObjects = async () => {
-    try {
-      const data = await awsClient.send(
-        new ListObjectsV2Command({ Bucket: "aidebate-cli" }),
-      );
-      console.log("Success", data.Contents);
-      return data.Contents;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
-
-  public static readonly getObject = async (objectKey: string) => {
-    try {
-      const data = await awsClient.send(
-        new GetObjectCommand({ Bucket: "aidebate-cli", Key: objectKey }),
-      );
-      console.log("Success", data);
-      /*  data.Body?.transformToString().then((body) => {
-        console.log("Body", body);
-      }); */
-
-      data.Body?.on("data", (chunk) => {
-        console.log("Data", chunk);
-      });
-      return data;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
-
-  public static readonly putObject = async (
-    objectKey: string,
-    data: any,
-    filePath: string,
-  ) => {
-    let body = data;
-    let filename = objectKey;
-
-    if (filePath) {
-      //   body = readFileSync(filePath);
-      body = createReadStream(filePath);
-      filename = path.basename(filePath);
-    }
-
-    if (!body) {
-      console.log("No body or file path provided for putObject");
-      return;
-    }
-
-    try {
-      const data = await awsClient.send(
-        new PutObjectCommand({
-          Bucket: "aidebate-cli",
-          Key: filename,
-          Body: body,
-        }),
-      );
-      console.log("Success", data);
-      return data;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
-
-  public static readonly deleteObject = async (objectKey: string) => {
-    try {
-      const data = await awsClient.send(
-        new DeleteObjectCommand({ Bucket: "aidebate-cli", Key: objectKey }),
-      );
-      console.log("Success", data);
-      return data;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
+  // console.log(command)
+  return getSignedUrl(awsClient, command, {
+    expiresIn: 15 * 60,
+  });
 }
 
-// await Aws.getPublicAccessBlock();
-// await Aws.getBucketPolicy();
-// await Aws.listObjects();
-// await Aws.getObject("hello");
-await Aws.putObject("aws.ts", null, "/home/karan/Downloads/Thesis_production_process_animation_202607270658.mp4");
-// await Aws.deleteObject("Thesis_production_process_animation_202607270658.mp4");
+export async function createPutPresignedUrl(objectKey: string) {
+  const command = new PutObjectCommand({
+    Bucket: "printcampus",
+    Key: objectKey,
+  });
+
+  // console.log(command)
+  return getSignedUrl(awsClient, command, {
+    expiresIn: 15 * 60,
+  });
+}
+
+// Example
+/* const url = await createGetPresignedUrl(
+  "uploads/1785992369681_spiral-binding.png",
+); */
+const url = await createPutPresignedUrl("arun-thesis-flow-process.mp4");
+
+console.log(url);

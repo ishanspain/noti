@@ -14,7 +14,7 @@ export function createPresignedPutUrl({
   region,
   bucket,
   key,
-  expiresIn = 900, // 15 min
+  expiresIn = 15 * 60, // 15 min
 }: {
   accessKeyId: string;
   secretAccessKey: string;
