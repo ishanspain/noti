@@ -7,15 +7,15 @@ import { createReadStream } from "node:fs";
 ); */
 
 const rs = createReadStream(
-  "/home/karan/Videos/Ne Zha 2 2025 1080p WEB-DL HEVC x265 5.1 BONE.mkv",
+  "C:\\Users\\User\\Downloads\\knLanShare\\Screenshot_2026-08-12-14-22-07-51_40deb401b9ffe8e1df2f1cc5ba480b12.jpg",
 );
 
 try {
   const upload = new Upload({
     client: awsClient,
     params: {
-      Bucket: "aidebate-cli",
-      Key: "test.mp4",
+      Bucket: "printcampus",
+      Key: "test/test.jpg",
       Body: rs,
     },
   });

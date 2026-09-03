@@ -1,0 +1,25 @@
+in ths aws code, the incase of the push sign url, when we give file name, it is not for verifing which file we uploading from the system, instead it is for 
+1. If someone uses this presigned URL, store the uploaded bytes in the bucket under this object key.
+2. 
+
+
+==================================================================
+see here i upload one image file this "kyc-required.png" on the put presigned url which has the key name as "arun-thesis-flow-process.mp4"  , without mentioning the file contenttype, so the full file got uploaded by the name arun-thesis-flow-process.mp4  in the type aws is showing that type is mp4, becuase this is completely bases on extension
+
+but when i am opening the file, while clicking on the open button from the aws , file the is opening as image (then how did this url knows the content type), there si also not content type in the resposne and request header , 
+
+Ans: - When Content-Type is absent, browsers such as Chrome can perform MIME sniffing.
+The Content-Disposition: inline header in my case tells the browser to try to display the content in the tab rather than force a download, which is what triggers the sniff-and-render path in the first place.
+
+=========================================================================
+That does not mean AWS inspected the actual binary data and concluded that it is an MP4.
+-------------------
+"this role can call s3:PutObject only on arn:aws:s3:::my-bucket/uploads/* between 9am–5pm from this IP range."
+=======================================================
+Flat-rate plans: - 
+aws has introduced the Flat-rate plans in the cloudfront
+
+==================================================
+Verificaiton Type: - 
+1. The request signature we calculated does not match the signature you provided. Check your key and signing method
+2. 
