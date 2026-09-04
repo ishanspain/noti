@@ -10,47 +10,51 @@ import { awsClient } from "./clients/awsClient";
 
 const bucketName = "aidebate-cli";
 
-export async function createGetPresignedUrl(objectKey: string) {
-  const command = new GetObjectCommand({
-    Bucket: bucketName,
-    Key: objectKey,
-  });
+export class AwsService {
+  private constructor() {}
 
-  // console.log(command)
-  return getSignedUrl(awsClient, command, {
-    expiresIn: 15 * 60,
-  });
-}
+  public static async createGetPresignedUrl(objectKey: string) {
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: objectKey,
+    });
 
-export async function createPutPresignedUrl(objectKey: string) {
-  const command = new PutObjectCommand({
-    Bucket: bucketName,
-    Key: objectKey,
-    ContentType: "image/png",
-  });
+    // console.log(command)
+    return getSignedUrl(awsClient, command, {
+      expiresIn: 15 * 60,
+    });
+  }
 
-  // console.log(command)
-  return getSignedUrl(awsClient, command, {
-    expiresIn: 15 * 60,
-    signableHeaders: new Set(["content-type"]),
-  });
-}
+  public static async createPutPresignedUrl(objectKey: string) {
+    const command = new PutObjectCommand({
+      Bucket: bucketName,
+      Key: objectKey,
+      ContentType: "image/png",
+    });
 
-export async function createDeletePresignedUrl(objectKey: string) {
-  const command = new DeleteObjectCommand({
-    Bucket: bucketName,
-    Key: objectKey,
-  });
+    // console.log(command)
+    return getSignedUrl(awsClient, command, {
+      expiresIn: 15 * 60,
+      signableHeaders: new Set(["content-type"]),
+    });
+  }
 
-  // console.log(command)
-  return getSignedUrl(awsClient, command, {
-    expiresIn: 15 * 60,
-  });
+  public static async createDeletePresignedUrl(objectKey: string) {
+    const command = new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: objectKey,
+    });
+
+    // console.log(command)
+    return getSignedUrl(awsClient, command, {
+      expiresIn: 15 * 60,
+    });
+  }
 }
 
 // Example
 // const url = await createGetPresignedUrl("test/test.jpg");
-const url = await createPutPresignedUrl("sal-1.png");
+// const url = await AwsService.createPutPresignedUrl("sal-1.png");
 // const url = await createDeletePresignedUrl("test/jmi-2.png");
 
-console.log(url);
+// console.log(url);

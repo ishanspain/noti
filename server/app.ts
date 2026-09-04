@@ -1,5 +1,6 @@
 import expres from "express";
 import webpush from "web-push";
+import { AwsService } from "./aws";
 
 // import dns from 'node:dns'
 // dns.setDefaultResultOrder('ipv4first')
@@ -16,11 +17,10 @@ console.log("subscriptions", subscriptions);
 // const vapidKeys = webpush.generateVAPIDKeys();
 // console.log("vapidkeys", vapidKeys);
 
-const publicKey =
-  "test";
+const publicKey = "test";
 const privateKey = "test two";
 
-webpush.setVapidDetails("mailto:example@yourdomain.org", publicKey, privateKey);
+// webpush.setVapidDetails("mailto:example@yourdomain.org", publicKey, privateKey);
 
 app.use(expres.json());
 app.use(expres.urlencoded({ extended: true }));
@@ -55,9 +55,7 @@ app.post("/subscriber", (req, res) => {
   const { id, subscription } = req.body;
 
   if (!id || !subscription) {
-    res
-      .status(400)
-      .json({ message: "subscriptionid are required" });
+    res.status(400).json({ message: "subscriptionid are required" });
     return;
   }
 
@@ -131,7 +129,36 @@ app.get("/pub", async (req, res) => {
   res.json({ message: "Notifications sent!" });
 });
 
+app.get("/signurl", async (req, res) => {
+  const objectKey = req.query.objectKey as string;
+  const method = req.query.method as string;
+  if (!objectKey) {
+    res.status(400).json({ message: "objectKey query parameter is required" });
+    return;
+  }
+  if (!method) {
+    res.status(400).json({ message: "method query parameter is required" });
+    return;
+  }
 
+  try {
+    let url;
+    if (method === "PUT") {
+      url = await AwsService.createPutPresignedUrl(objectKey);
+    } else if (method === "GET") {
+      url = await AwsService.createGetPresignedUrl(objectKey);
+    } else if (method === "DELETE") {
+      url = await AwsService.createDeletePresignedUrl(objectKey);
+    } else {
+      res.status(400).json({ message: "Invalid method. Use PUT, GET, or DELETE." });
+      return;
+    }
+    res.json({ url });
+  } catch (error) {
+    console.error("Error generating presigned URL", error);
+    res.status(500).json({ message: "Error generating presigned URL" });
+  }
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
