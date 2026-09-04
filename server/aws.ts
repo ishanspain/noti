@@ -25,11 +25,11 @@ export class AwsService {
     });
   }
 
-  public static async createPutPresignedUrl(objectKey: string) {
+  public static async createPutPresignedUrl(objectKey: string, contentType: string) {
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: objectKey,
-      ContentType: "image/png",
+      ContentType: contentType,
     });
 
     // console.log(command)

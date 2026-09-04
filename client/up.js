@@ -1,18 +1,23 @@
 const fileInput = document.getElementById("fileInput");
 
-async function getSignUrl(key, method) {
+async function getSignUrl(key, method, contentType) {
   const url = new URL("http://localhost:3000/signurl");
   url.searchParams.append("objectKey", key);
   url.searchParams.append("method", method);
+  if (method === "PUT" && contentType) {
+    url.searchParams.append("contentType", contentType);
+  }
 
   const res = await fetch(url);
-  console.log("received signed url", res);
 
   if (!res.ok) {
     throw new Error(`Failed to get signed URL: ${res.statusText}`);
   }
 
-  return res.json();
+  const data = await res.json();
+  console.log("received signed url", data);
+
+  return data;
 }
 
 fileInput.addEventListener("change", async (event) => {
@@ -22,7 +27,8 @@ fileInput.addEventListener("change", async (event) => {
 
   const key = file.name;
   const method = "PUT";
-  const { url } = await getSignUrl(key, method);
+  const contentType = file.type || "application/octet-stream";
+  const { url } = await getSignUrl(key, method, contentType);
 
   const formData = new FormData();
   formData.append("file", file);
@@ -31,7 +37,7 @@ fileInput.addEventListener("change", async (event) => {
     const response = await fetch(url, {
       method: "PUT",
       // body: formData,
-      headers: { "Content-Type": file.type || "application/octet-stream" },
+      headers: { "Content-Type": contentType },
       body: file,
     });
 

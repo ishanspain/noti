@@ -132,6 +132,8 @@ app.get("/pub", async (req, res) => {
 app.get("/signurl", async (req, res) => {
   const objectKey = req.query.objectKey as string;
   const method = req.query.method as string;
+  const contentType = req.query.contentType as string;
+
   if (!objectKey) {
     res.status(400).json({ message: "objectKey query parameter is required" });
     return;
@@ -141,16 +143,36 @@ app.get("/signurl", async (req, res) => {
     return;
   }
 
+  if (method === "PUT" && !contentType) {
+    res
+      .status(400)
+      .json({
+        message: "contentType query parameter is required for PUT method",
+      });
+    return;
+  }
+
+  console.log(
+    "objectKey",
+    objectKey,
+    "method",
+    method,
+    "contentType",
+    contentType,
+  );
+
   try {
     let url;
     if (method === "PUT") {
-      url = await AwsService.createPutPresignedUrl(objectKey);
+      url = await AwsService.createPutPresignedUrl(objectKey, contentType);
     } else if (method === "GET") {
       url = await AwsService.createGetPresignedUrl(objectKey);
     } else if (method === "DELETE") {
       url = await AwsService.createDeletePresignedUrl(objectKey);
     } else {
-      res.status(400).json({ message: "Invalid method. Use PUT, GET, or DELETE." });
+      res
+        .status(400)
+        .json({ message: "Invalid method. Use PUT, GET, or DELETE." });
       return;
     }
     res.json({ url });
