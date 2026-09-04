@@ -17,8 +17,8 @@ console.log("subscriptions", subscriptions);
 // console.log("vapidkeys", vapidKeys);
 
 const publicKey =
-  "BAypmqsMGkgUbkIU2nfuaJRhcvUeIwX1SisP9JYx47laKRDlgWIUrabOx_6jIV4k4H_vGt9H_xQbS-lc7gVc0H0";
-const privateKey = "ZFe-aLfqZ0SYLYu8btGNNbUyfhw5Mf_Zp7l2ZbI3yeg";
+  "test";
+const privateKey = "test two";
 
 webpush.setVapidDetails("mailto:example@yourdomain.org", publicKey, privateKey);
 
@@ -130,6 +130,8 @@ app.get("/pub", async (req, res) => {
   console.log("Total subscriptions:", subscriptions.length);
   res.json({ message: "Notifications sent!" });
 });
+
+
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

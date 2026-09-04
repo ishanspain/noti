@@ -8,7 +8,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
 
-const bucketName = "printcampus";
+const bucketName = "aidebate-cli";
 
 export async function createGetPresignedUrl(objectKey: string) {
   const command = new GetObjectCommand({
@@ -50,7 +50,7 @@ export async function createDeletePresignedUrl(objectKey: string) {
 
 // Example
 // const url = await createGetPresignedUrl("test/test.jpg");
-const url = await createPutPresignedUrl("test/jmi-2.png");
+const url = await createPutPresignedUrl("sal-1.png");
 // const url = await createDeletePresignedUrl("test/jmi-2.png");
 
 console.log(url);

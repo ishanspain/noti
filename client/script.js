@@ -15,13 +15,13 @@ import { getMessaging, onRegistered, register } from "firebase/messaging";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDy05-gqEJjAOPTfLKaKNi7Of5ssDwlV8w",
-  authDomain: "printcampus-15089.firebaseapp.com",
-  projectId: "printcampus-15089",
-  storageBucket: "printcampus-15089.firebasestorage.app",
-  messagingSenderId: "562212642188",
-  appId: "1:562212642188:web:a6bfb5545bab7ad750caa9",
-  measurementId: "G-SVKD9EFKMZ",
+  apiKey: "get from .env",
+  authDomain: "get from .env",
+  projectId: "get from .env",
+  storageBucket: "get from .env",
+  messagingSenderId: "get from .env",
+  appId: "get from .env",
+  measurementId: "get from .env",
 };
 
 // Initialize Firebase
