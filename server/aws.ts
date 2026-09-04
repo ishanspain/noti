@@ -18,10 +18,11 @@ const getBucketKey = (objectKey: string) =>
 export class AwsService {
   private constructor() {}
 
-  public static async createGetPresignedUrl(objectKey: string) {
+  public static async createGetPresignedUrl(objectKey: string, download: boolean) {
     const command = new GetObjectCommand({
       Bucket: bucketName,
-      Key: getBucketKey(objectKey),
+      Key: objectKey,
+      ResponseContentDisposition: `${download ? "attachment" : "inline"}; filename="${objectKey}"`,
     });
 
     // console.log(command)
