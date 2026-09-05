@@ -66,10 +66,10 @@ export class AwsService {
         Key: getBucketKey(objectKey),
       });
       const res = await awsClient.send(command);
-      console.log("status code", res.$metadata.httpStatusCode)
-      return res
+      return { success: true, data: res };
     } catch (err) {
       console.log("Head object err", err);
+      return { success: false, error: err };
     }
   }
 }
@@ -81,5 +81,5 @@ export class AwsService {
 
 // console.log(url);
 
-const res = await AwsService.getFileMetaData("test (2).jpeg");
-console.log(res);
+/* const res = await AwsService.getFileMetaData("test (2).jpeg");
+console.log(res); */

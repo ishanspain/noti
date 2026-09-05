@@ -180,8 +180,8 @@ app.get("/signurl", async (req, res) => {
   }
 });
 
-app.get("/uploadComplete", (req, res) => {
-  const { objectKey } = req.query;
+app.get("/uploadComplete", async (req, res) => {
+  const { objectKey } = req.query as { objectKey: string };
 
   if (!objectKey) {
     return res
@@ -189,7 +189,14 @@ app.get("/uploadComplete", (req, res) => {
       .json({ message: "objectKey query parameter is required" });
   }
 
-  // Handle upload completion logic here
+  const fileMetadata = await AwsService.getFileMetaData(objectKey);
+  console.log("File metadata:", fileMetadata);
+  if (!fileMetadata.success) {
+    return res.status(500).json({ message: "Error retrieving file metadata" });
+  }
+  return res
+    .status(200)
+    .json({ message: "File metadata retrieved", data: fileMetadata.data });
 });
 
 app.listen(3000, () => {

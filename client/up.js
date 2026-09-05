@@ -21,6 +21,15 @@ async function getSignUrl(key, method, contentType) {
   return data;
 }
 
+function getFileMetaData(key) {
+  const url = new URL("http://localhost:3000/uploadComplete");
+  url.searchParams.append("objectKey", key);
+
+  return axios.get(url).then((response) => {
+    return response.data;
+  });
+}
+
 fileInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   console.log("uploading file", file);
@@ -43,6 +52,8 @@ fileInput.addEventListener("change", async (event) => {
     });
 
     console.log("File uploaded successfully", response);
+    const uploadResult = await getFileMetaData(key);
+    console.log("Upload result:", uploadResult);
   } catch (error) {
     console.error(
       "Error uploading file:",
