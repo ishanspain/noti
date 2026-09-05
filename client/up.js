@@ -42,7 +42,7 @@ fileInput.addEventListener("change", async (event) => {
       },
     });
 
-    console.log("File uploaded successfully");
+    console.log("File uploaded successfully", response);
   } catch (error) {
     console.error(
       "Error uploading file:",

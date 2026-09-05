@@ -60,11 +60,17 @@ export class AwsService {
   }
 
   public static async getFileMetaData(objectKey: string) {
-    const command = new HeadObjectCommand({
-      Bucket: bucketName,
-      Key: getBucketKey(objectKey),
-    });
-    return awsClient.send(command);
+    try {
+      const command = new HeadObjectCommand({
+        Bucket: bucketName,
+        Key: getBucketKey(objectKey),
+      });
+      const res = await awsClient.send(command);
+      console.log("status code", res.$metadata.httpStatusCode)
+      return res
+    } catch (err) {
+      console.log("Head object err", err);
+    }
   }
 }
 
@@ -74,3 +80,6 @@ export class AwsService {
 // const url = await AwsService.createDeletePresignedUrl("jmi-2.png");
 
 // console.log(url);
+
+const res = await AwsService.getFileMetaData("test (2).jpeg");
+console.log(res);

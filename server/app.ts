@@ -144,11 +144,9 @@ app.get("/signurl", async (req, res) => {
   }
 
   if (method === "PUT" && !contentType) {
-    res
-      .status(400)
-      .json({
-        message: "contentType query parameter is required for PUT method",
-      });
+    res.status(400).json({
+      message: "contentType query parameter is required for PUT method",
+    });
     return;
   }
 
@@ -184,6 +182,13 @@ app.get("/signurl", async (req, res) => {
 
 app.get("/uploadComplete", (req, res) => {
   const { objectKey } = req.query;
+
+  if (!objectKey) {
+    return res
+      .status(400)
+      .json({ message: "objectKey query parameter is required" });
+  }
+
   // Handle upload completion logic here
 });
 
