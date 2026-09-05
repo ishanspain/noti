@@ -182,6 +182,11 @@ app.get("/signurl", async (req, res) => {
   }
 });
 
+app.get("/uploadComplete", (req, res) => {
+  const { objectKey } = req.query;
+  // Handle upload completion logic here
+});
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

@@ -1,5 +1,5 @@
+import axios from "axios";
 const fileInput = document.getElementById("fileInput");
-
 
 async function getSignUrl(key, method, contentType) {
   const url = new URL("http://localhost:3000/signurl");
@@ -31,23 +31,23 @@ fileInput.addEventListener("change", async (event) => {
   const contentType = file.type || "application/octet-stream";
   const { url } = await getSignUrl(key, method, contentType);
 
-  const formData = new FormData();
-  formData.append("file", file);
-
   try {
-    const response = await fetch(url, {
-      method: "PUT",
-      // body: formData,
-      // headers: { "Content-Type": contentType },
-      body: file,
+    const response = await axios.put(url, file, {
+      headers: { "Content-Type": contentType },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total || file.size),
+        );
+        console.log(`Upload progress: ${percentCompleted}%`);
+      },
     });
 
-    if (response.ok) {
-      console.log("File uploaded successfully");
-    } else {
-      console.error("File upload failed");
-    }
+    console.log("File uploaded successfully");
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error(
+      "Error uploading file:",
+      error.response?.status,
+      error.response?.data || error.message,
+    );
   }
 });

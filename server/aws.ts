@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   S3Client,
+  HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
@@ -29,7 +30,10 @@ export class AwsService {
     });
   }
 
-  public static async createPutPresignedUrl(objectKey: string, contentType: string) {
+  public static async createPutPresignedUrl(
+    objectKey: string,
+    contentType: string,
+  ) {
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: getBucketKey(objectKey),
@@ -53,6 +57,14 @@ export class AwsService {
     return getSignedUrl(awsClient, command, {
       expiresIn: 15 * 60,
     });
+  }
+
+  public static async getFileMetaData(objectKey: string) {
+    const command = new HeadObjectCommand({
+      Bucket: bucketName,
+      Key: getBucketKey(objectKey),
+    });
+    return awsClient.send(command);
   }
 }
 
