@@ -8,7 +8,11 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
 
-const bucketName = "aidebate-cli";
+const bucketName = "printcampus-dev";
+const bucketPrefix = "test";
+
+const getBucketKey = (objectKey: string) =>
+  `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}`;
 
 export class AwsService {
   private constructor() {}
@@ -16,7 +20,7 @@ export class AwsService {
   public static async createGetPresignedUrl(objectKey: string) {
     const command = new GetObjectCommand({
       Bucket: bucketName,
-      Key: objectKey,
+      Key: getBucketKey(objectKey),
     });
 
     // console.log(command)
@@ -28,7 +32,7 @@ export class AwsService {
   public static async createPutPresignedUrl(objectKey: string, contentType: string) {
     const command = new PutObjectCommand({
       Bucket: bucketName,
-      Key: objectKey,
+      Key: getBucketKey(objectKey),
       ContentType: contentType,
     });
 
@@ -42,7 +46,7 @@ export class AwsService {
   public static async createDeletePresignedUrl(objectKey: string) {
     const command = new DeleteObjectCommand({
       Bucket: bucketName,
-      Key: objectKey,
+      Key: getBucketKey(objectKey),
     });
 
     // console.log(command)
@@ -53,8 +57,8 @@ export class AwsService {
 }
 
 // Example
-// const url = await createGetPresignedUrl("test/test.jpg");
+// const url = await AwsService.createGetPresignedUrl("test.jpg");
 // const url = await AwsService.createPutPresignedUrl("sal-1.png");
-// const url = await createDeletePresignedUrl("test/jmi-2.png");
+// const url = await AwsService.createDeletePresignedUrl("jmi-2.png");
 
 // console.log(url);

@@ -1,5 +1,6 @@
 const fileInput = document.getElementById("fileInput");
 
+
 async function getSignUrl(key, method, contentType) {
   const url = new URL("http://localhost:3000/signurl");
   url.searchParams.append("objectKey", key);
@@ -37,7 +38,7 @@ fileInput.addEventListener("change", async (event) => {
     const response = await fetch(url, {
       method: "PUT",
       // body: formData,
-      headers: { "Content-Type": contentType },
+      // headers: { "Content-Type": contentType },
       body: file,
     });
 
