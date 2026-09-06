@@ -8,6 +8,8 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
+import { createCfSignedUrl } from "./cf";
+
 
 const bucketName = "aidebate-cli";
 const bucketPrefix = "";
@@ -34,6 +36,16 @@ export class AwsService {
     return getSignedUrl(awsClient, command, {
       expiresIn: 15 * 60,
     });
+  }
+
+  public static async createGetCfPresignedUrl(
+    objectKey: string,
+    download: boolean,
+  ) {
+   const url = createCfSignedUrl(objectKey, 5 * 60);
+
+    // console.log(command)
+    return url;
   }
 
   public static async createPutPresignedUrl(
@@ -93,11 +105,12 @@ export class AwsService {
 // const url = await AwsService.createGetPresignedUrl("test.jpg");
 // const url = await AwsService.createPutPresignedUrl("sal-1.png");
 // const url = await AwsService.createDeletePresignedUrl("jmi-2.png");
+const url = await AwsService.createGetCfPresignedUrl("kls-white.png", true);
 
-// console.log(url);
+console.log(url);
 
 /* const res = await AwsService.getFileMetaData("test (2).jpeg");
 console.log(res); */
 
-const delres = await AwsService.deleteObject("Screenshot 2026-08-29 001355.png");
-console.log("delete res", delres)
+/* const delres = await AwsService.deleteObject("Screenshot 2026-08-29 001355.png");
+console.log("delete res", delres) */

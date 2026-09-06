@@ -1,12 +1,16 @@
 import axios from "axios";
 const fileInput = document.getElementById("fileInput");
+const imgPreview = document.getElementById("image-preview");
 
-async function getSignUrl(key, method, contentType) {
+async function getSignUrl(key, method, contentType, download) {
   const url = new URL("http://localhost:3000/signurl");
   url.searchParams.append("objectKey", key);
   url.searchParams.append("method", method);
   if (method === "PUT" && contentType) {
     url.searchParams.append("contentType", contentType);
+  }
+  if (method === "GET") {
+    url.searchParams.append("download", download);
   }
 
   const res = await fetch(url);
@@ -16,9 +20,13 @@ async function getSignUrl(key, method, contentType) {
   }
 
   const data = await res.json();
-  console.log("received signed url", data);
+  console.log("received signed url", method, data);
 
   return data;
+}
+
+function updateImgUrl(url) {
+  imgPreview.src = url;
 }
 
 function getFileMetaData(key) {
@@ -36,12 +44,12 @@ fileInput.addEventListener("change", async (event) => {
   if (!file) return;
 
   const key = file.name;
-  const method = "PUT";
+  const download = false;
   const contentType = file.type || "application/octet-stream";
-  const { url } = await getSignUrl(key, method, contentType);
+  const { url: putUrl } = await getSignUrl(key, "PUT", contentType, download);
 
   try {
-    const response = await axios.put(url, file, {
+    const response = await axios.put(putUrl, file, {
       headers: { "Content-Type": contentType },
       onUploadProgress: (progressEvent) => {
         const percentCompleted = Math.round(
@@ -52,6 +60,8 @@ fileInput.addEventListener("change", async (event) => {
     });
 
     console.log("File uploaded successfully", response);
+    const { url: getUrl } = await getSignUrl(key, "GET", contentType, download);
+    updateImgUrl(getUrl);
     const uploadResult = await getFileMetaData(key);
     console.log("Upload result:", uploadResult);
   } catch (error) {
