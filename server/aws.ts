@@ -12,12 +12,18 @@ import { awsClient } from "./clients/awsClient";
 const bucketName = "aidebate-cli";
 const bucketPrefix = "";
 
-const getBucketKey = (objectKey: string) => bucketPrefix ? `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}` : objectKey.replace(/^\/+/, "");
+const getBucketKey = (objectKey: string) =>
+  bucketPrefix
+    ? `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}`
+    : objectKey.replace(/^\/+/, "");
 
 export class AwsService {
   private constructor() {}
 
-  public static async createGetPresignedUrl(objectKey: string, download: boolean) {
+  public static async createGetPresignedUrl(
+    objectKey: string,
+    download: boolean,
+  ) {
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: objectKey,
@@ -59,6 +65,15 @@ export class AwsService {
     });
   }
 
+  public static async deleteObject(objectKey: string) {
+    const command = new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: getBucketKey(objectKey),
+    });
+
+    return awsClient.send(command);
+  }
+
   public static async getFileMetaData(objectKey: string) {
     try {
       const command = new HeadObjectCommand({
@@ -83,3 +98,6 @@ export class AwsService {
 
 /* const res = await AwsService.getFileMetaData("test (2).jpeg");
 console.log(res); */
+
+const delres = await AwsService.deleteObject("Screenshot 2026-08-29 001355.png");
+console.log("delete res", delres)
