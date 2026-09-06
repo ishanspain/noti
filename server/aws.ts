@@ -9,11 +9,10 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { awsClient } from "./clients/awsClient";
 
-const bucketName = "printcampus-dev";
-const bucketPrefix = "test";
+const bucketName = "aidebate-cli";
+const bucketPrefix = "";
 
-const getBucketKey = (objectKey: string) =>
-  `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}`;
+const getBucketKey = (objectKey: string) => bucketPrefix ? `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}` : objectKey.replace(/^\/+/, "");
 
 export class AwsService {
   private constructor() {}

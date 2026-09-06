@@ -1,16 +1,12 @@
 import axios from "axios";
 const fileInput = document.getElementById("fileInput");
-const imgPreview = document.getElementById("image-preview");
 
-async function getSignUrl({ key, method, contentType, download }) {
+async function getSignUrl(key, method, contentType) {
   const url = new URL("http://localhost:3000/signurl");
   url.searchParams.append("objectKey", key);
   url.searchParams.append("method", method);
   if (method === "PUT" && contentType) {
     url.searchParams.append("contentType", contentType);
-  }
-  if (method === "GET" && download) {
-    url.searchParams.append("download", download.toString());
   }
 
   const res = await fetch(url);
@@ -25,17 +21,13 @@ async function getSignUrl({ key, method, contentType, download }) {
   return data;
 }
 
-function updateImgUrl(url) {
-  imgPreview.src = url;
-}
+function getFileMetaData(key) {
+  const url = new URL("http://localhost:3000/uploadComplete");
+  url.searchParams.append("objectKey", key);
 
-function downloadFile(url, filename) {
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  return axios.get(url).then((response) => {
+    return response.data;
+  });
 }
 
 fileInput.addEventListener("change", async (event) => {
@@ -44,44 +36,24 @@ fileInput.addEventListener("change", async (event) => {
   if (!file) return;
 
   const key = file.name;
+  const method = "PUT";
   const contentType = file.type || "application/octet-stream";
-  const download = false;
-  const { url: puturl } = await getSignUrl({
-    key,
-    method: "PUT",
-    contentType,
-    download,
-  });
-
-  const formData = new FormData();
-  formData.append("file", file);
+  const { url } = await getSignUrl(key, method, contentType);
 
   try {
-    const response = await fetch(puturl, {
-      method: "PUT",
-      // body: formData,
+    const response = await axios.put(url, file, {
       headers: { "Content-Type": contentType },
-      body: file,
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total || file.size),
+        );
+        console.log(`Upload progress: ${percentCompleted}%`);
+      },
     });
 
-    if (response.ok) {
-      console.log("File uploaded successfully", response);
-
-      const { url: geturl } = await getSignUrl({
-        key,
-        method: "GET",
-        contentType,
-        download,
-      });
-
-      if (download) {
-        downloadFile(geturl, key);
-      } else {
-        updateImgUrl(geturl);
-      }
-    } else {
-      console.error("File upload failed", await response.text());
-    }
+    console.log("File uploaded successfully", response);
+    const uploadResult = await getFileMetaData(key);
+    console.log("Upload result:", uploadResult);
   } catch (error) {
     console.error(
       "Error uploading file:",
