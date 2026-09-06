@@ -176,7 +176,7 @@ app.get("/signurl", async (req, res) => {
       url = await AwsService.createPutPresignedUrl(objectKey, contentType);
     } else if (method === "GET") {
       // url = await AwsService.createGetPresignedUrl(objectKey, download);
-      url = await AwsService.createGetCfPresignedUrl(objectKey, download);
+      url = await AwsService.createGetCfPresignedUrl(objectKey, { download, filename: objectKey });
     } else if (method === "DELETE") {
       url = await AwsService.createDeletePresignedUrl(objectKey);
     } else {

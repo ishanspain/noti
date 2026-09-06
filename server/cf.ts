@@ -10,16 +10,32 @@ const cloudfrontDistributionDomain = "https://d1w8kbx0bk8b9x.cloudfront.net";
 const privateKey = pk;
 const keyPairId = "K2DB8A110MX427";
 
-export function createCfSignedUrl(ObjectKey: string, Seconds: number) {
-  const url = `${cloudfrontDistributionDomain}/${ObjectKey}`;
-  const dateLessThan = new Date(Date.now() + Seconds * 1000).toISOString();
+export function createCfSignedUrl(
+  objectKey: string,
+  expiresInSeconds: number,
+  options?: {
+    download?: boolean;
+    filename?: string;
+  },
+) {
+  const url = new URL(`${cloudfrontDistributionDomain}/${objectKey}`);
 
-  const signedUrl = getSignedUrl({
-    url,
+  if (options?.download) {
+    url.searchParams.set("download", "1");
+
+    if (options.filename) {
+      url.searchParams.set("filename", options.filename);
+    }
+  }
+
+  const dateLessThan = new Date(
+    Date.now() + expiresInSeconds * 1000,
+  ).toISOString();
+
+  return getSignedUrl({
+    url: url.toString(),
     keyPairId,
     dateLessThan,
     privateKey,
   });
-
-  return signedUrl;
 }

@@ -29,6 +29,15 @@ function updateImgUrl(url) {
   imgPreview.src = url;
 }
 
+function downloadFile(url, filename) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 function getFileMetaData(key) {
   const url = new URL("http://localhost:3000/uploadComplete");
   url.searchParams.append("objectKey", key);
@@ -61,7 +70,11 @@ fileInput.addEventListener("change", async (event) => {
 
     console.log("File uploaded successfully", response);
     const { url: getUrl } = await getSignUrl(key, "GET", contentType, download);
-    updateImgUrl(getUrl);
+    if (download) {
+      downloadFile(getUrl, key);
+    } else {
+      updateImgUrl(getUrl);
+    }
     const uploadResult = await getFileMetaData(key);
     console.log("Upload result:", uploadResult);
   } catch (error) {

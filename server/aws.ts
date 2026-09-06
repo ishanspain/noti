@@ -14,6 +14,11 @@ import { createCfSignedUrl } from "./cf";
 const bucketName = "aidebate-cli";
 const bucketPrefix = "";
 
+interface downloadOptions {
+  download?: boolean;
+  filename?: string;
+}
+
 const getBucketKey = (objectKey: string) =>
   bucketPrefix
     ? `${bucketPrefix}/${objectKey.replace(/^\/+/, "")}`
@@ -40,9 +45,9 @@ export class AwsService {
 
   public static async createGetCfPresignedUrl(
     objectKey: string,
-    download: boolean,
+    options?: downloadOptions,
   ) {
-   const url = createCfSignedUrl(objectKey, 5 * 60);
+   const url = createCfSignedUrl(objectKey, 5 * 60, options);
 
     // console.log(command)
     return url;
@@ -105,7 +110,9 @@ export class AwsService {
 // const url = await AwsService.createGetPresignedUrl("test.jpg");
 // const url = await AwsService.createPutPresignedUrl("sal-1.png");
 // const url = await AwsService.createDeletePresignedUrl("jmi-2.png");
-const url = await AwsService.createGetCfPresignedUrl("kls-white.png", true);
+// const url = await AwsService.createGetCfPresignedUrl("kls-white.png", true);
+const url = await AwsService.createGetCfPresignedUrl("kls-white.png", { download: true, filename: "kls-white.png" });
+
 
 console.log(url);
 
