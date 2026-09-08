@@ -1,7 +1,7 @@
 import { DescribeInstancesCommand, EC2Client } from "@aws-sdk/client-ec2";
 import { fileURLToPath } from "node:url";
 
-process.loadEnvFile(fileURLToPath(new URL("../../../.env", import.meta.url)));
+process.loadEnvFile(".env");
 
 const region = process.env.AWS_APPSINVO_REGION;
 const accessKeyId = process.env.AWS_APPSINVO_ACCESS_KEY_ID;
