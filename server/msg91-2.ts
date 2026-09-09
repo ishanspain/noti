@@ -74,8 +74,10 @@ if (!phoneNumber) {
   throw new Error("PHONE environment variable is required");
 }
 
-await sendOtpSms({
+const res = await sendOtpSms({
   mobile: phoneNumber,
   otp: "123456",
   minutes: 5,
 });
+
+console.log("msg 91 logs", res);
